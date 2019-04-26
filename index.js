@@ -1,4 +1,3 @@
-
 function getIssues() {
   const repo = 'Adjoa/javascript-fetch-lab'
   
