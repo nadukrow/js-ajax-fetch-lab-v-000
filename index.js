@@ -1,63 +1,64 @@
+
 function getIssues() {
+  const repo = 'Adjoa/javascript-fetch-lab'
+  
   // GET /repos/:owner/:repo/issues
-  const repo = 'ackerm44/javascript-fetch-lab'
-
-  fetch (`https://api.github.com/repos/${repo}/issues`, {
+  fetch(`https://api.github.com/${repo}/issues`, {
     headers: {
-      'Authorization': `token ${getToken()}`
+      Authorization: `token ${getToken()}`
     }
-  }).then(res => res.json().then(json => showIssues(json)))
-}
-// `${response.items.map(r => displaySearchResult(r)).join('')}`
-
-function renderIssues(j) {
-  return `<div>
-            <h4>${j.title}</h4>
-            <p><em>${j.user.login}</em></p>
-            <p>${j.body}</p>
-          </div>`
+  }).then(res => res.json()).then(json => showIssues(json));
 }
 
 
 function showIssues(json) {
-  const issues = `<ul>${json.map(j => renderIssues(j)).join('')}`
-  $('#issues').html(issues)
+   const issues_html = `
+    <ul>
+      ${json.map(issue => `
+      <li>
+        <p>${issue.title}</p>
+        <p>${issue.body}</p>
+        <p>${issue.user.login}</p>
+      </li>`).join('')}
+    </ul>`
+  
+  $('#issues').html(issues_html)
 }
 
+
 function createIssue() {
-  const repo = 'ackerm44/javascript-fetch-lab'
+  const repo = 'Adjoa/javascript-fetch-lab'
   const postData = {
-    title: document.getElementById('title').value,
-    body: document.getElementById('body').value
+    "title": `${document.getElementById('title').value}`,
+    "body": `${document.getElementById('body').value}`,
   }
-  fetch (`https://api.github.com/repos/${repo}/issues`, {
+
+  // POST /repos/:owner/:repo/issues
+  fetch(`https://api.github.com/${repo}/issues`, {
     method: 'post',
     body: JSON.stringify(postData),
     headers: {
-      'Authorization': `token ${getToken()}`
+      Authorization: `token ${getToken()}`
     }
-  }).then(getIssues())
+  }).then(getIssues());
 }
 
+
 function showResults(json) {
+  html_string= `<a href=${json.html_url}>${json.name}</a>`
+  $('#results').html(html_string)
 }
 
 function forkRepo() {
   const repo = 'learn-co-curriculum/javascript-fetch-lab'
   //use fetch to fork it!
   // POST /repos/:owner/:repo/forks
-  fetch (`https://api.github.com/repos/${repo}/forks`, {
+  fetch(`https://api.github.com/repos/${repo}/forks`, {
     method: 'post',
     headers: {
-      'Authorization': `token ${getToken()}`
+      Authorization: `token ${getToken()}`
     }
-  }).then(res => res.json().then(json => showForkedRepo(json)))
-}
-
-
-function showForkedRepo(json) {
-  const repo = `<a href='${json.html_url}'>Link To Fork</a>`
-  $("#results").html(repo)
+  }).then(res => res.json()).then(json => showResults(json));
 }
 
 function getToken() {
